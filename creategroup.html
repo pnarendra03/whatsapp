@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create a New Group</h1>
+    <input type="text" id="groupName" placeholder="Enter group name" required>
+    <input type="text" id="member1" placeholder="Enter member number (e.g., 1234567890)" required>
+    <input type="text" id="member2" placeholder="Enter another member (optional)">
+    <button id="createGroupButton">Create Group</button>
+
+    <script>
+        document.getElementById('createGroupButton').addEventListener('click', function() {
+            const groupName = document.getElementById('groupName').value;
+            const member1 = document.getElementById('member1').value;
+            const member2 = document.getElementById('member2').value;
+
+            if (groupName && member1) {
+                const chatIds = [
+                    member1 + '@c.us', 
+                    member2 ? member2 + '@c.us' : undefined
+                ].filter(Boolean); // Removes empty entries
+                
+                createGroup(groupName, chatIds);
+            } else {
+                alert('Please enter a group name and at least one member.');
+            }
+        });
+
+        function createGroup(name, chatIds) {
+            const url = 'https://7103.api.greenapi.com/waInstance7103923326/createGroup/a514a46def7649b481890958921b537d85ab26f846c746a18e';
+            
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ groupName: name, chatIds })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message) });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Group created successfully:', data);
+                alert('Group created successfully!');
+                window.location.href = 'group.html';
+            })
+            .catch((error) => {
+                console.error('Error creating group:', error);
+                alert('Failed to create group. Please try again. Error: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

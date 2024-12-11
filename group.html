@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groups</title>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            height: 100vh;
+            margin: 0;
+        }
+        #leftPartition {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        #rightPartition {
+            flex: 2;
+            padding: 20px;
+            background-color: #fff;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+        button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="leftPartition">
+        <h2>Group Actions</h2>
+        <button onclick="window.location.href='creategroup.html'">Create Group</button>
+        <button onclick="updateGroupName()">Update Group Name</button>
+        <button onclick="getGroupData()">Get Group Data</button>
+        <button onclick="addGroupParticipant()">Add Group Participant</button>
+        <button onclick="removeGroupParticipant()">Remove Group Participant</button>
+        <button onclick="setGroupAdmin()">Set Group Admin</button>
+        <button onclick="removeAdmin()">Remove Admin</button>
+        <button onclick="leaveGroup()">Leave Group</button>
+    </div>
+
+    <div id="rightPartition">
+        <h2>Your Groups</h2>
+        <div id="groupList">
+            <!-- Dynamically populated group list will go here -->
+        </div>
+    </div>
+
+    <script>
+        // Example functions for button actions
+        function updateGroupName() {
+            // Logic to update group name
+            alert("Update Group Name functionality not implemented yet.");
+        }
+
+        function getGroupData() {
+            // Logic to get group data
+            alert("Get Group Data functionality not implemented yet.");
+        }
+
+        function addGroupParticipant() {
+            // Logic to add group participant
+            alert("Add Group Participant functionality not implemented yet.");
+        }
+
+        function removeGroupParticipant() {
+            // Logic to remove group participant
+            alert("Remove Group Participant functionality not implemented yet.");
+        }
+
+        function setGroupAdmin() {
+            // Logic to set group admin
+            alert("Set Group Admin functionality not implemented yet.");
+        }
+
+        function removeAdmin() {
+            // Logic to remove admin
+            alert("Remove Admin functionality not implemented yet.");
+        }
+
+        function leaveGroup() {
+            // Logic to leave group
+            alert("Leave Group functionality not implemented yet.");
+        }
+    </script>
+</body>
+</html>

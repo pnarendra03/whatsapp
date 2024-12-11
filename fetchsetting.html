@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Settings</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch Settings Page</h1>
+    <button id="getSettingsButton">Get Settings</button>
+
+    <table id="settingsTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>Setting</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody id="settingsBody"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('getSettingsButton').addEventListener('click', async () => {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/getSettings/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                displaySettings(data);
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        });
+
+        function displaySettings(data) {
+            const settingsTable = document.getElementById('settingsTable');
+            const settingsBody = document.getElementById('settingsBody');
+            settingsBody.innerHTML = ''; // Clear previous settings
+
+            // Loop through the data and create table rows
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const row = document.createElement('tr');
+                    const cellKey = document.createElement('td');
+                    const cellValue = document.createElement('td');
+                    cellKey.textContent = key;
+                    cellValue.textContent = data[key];
+                    row.appendChild(cellKey);
+                    row.appendChild(cellValue);
+                    settingsBody.appendChild(row);
+                }
+            }
+
+            settingsTable.style.display = 'table'; // Show the table
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Data</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            width: 80%;
+            max-width: 600px;
+            white-space: pre-wrap; /* Preserve whitespace for JSON */
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch Data Page</h1>
+    <button id="getSettingsButton" onclick="window.location.href='fetchsetting.html'">Get Settings</button>
+    <button id="setSettingsButton">Set Settings</button>
+    <button id="getStateButton">Get State Instance</button>
+    <button id="rebootButton">Reboot</button>
+    <button id="logoutButton">Logout</button>
+
+    <div id="response">Response will be displayed here...</div>
+
+    <script>
+        const responseDiv = document.getElementById('response');
+
+        // Helper function to handle API requests
+        async function fetchData(url, method, payload = null) {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const options = {
+                method: method,
+                headers: headers,
+                body: payload ? JSON.stringify(payload) : null,
+            };
+
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Event listeners for other buttons
+        document.getElementById('setSettingsButton').addEventListener('click', () => {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/setSettings/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            const payload = {
+                "webhookUrl": "https://mysite.ru",
+                "delaySendMessagesMilliseconds": 1000,
+                "markIncomingMessagesReaded": "no",
+                "outgoingWebhook": "yes",
+                "stateWebhook": "yes",
+                "incomingWebhook": "yes",
+                "deviceWebhook": "no"
+            };
+            fetchData(url, 'POST', payload);
+        });
+
+        document.getElementById('getStateButton').addEventListener('click', () => {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/getStateInstance/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            fetchData(url, 'GET');
+        });
+
+        document.getElementById('rebootButton').addEventListener('click', () => {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/reboot/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            fetchData(url, 'GET');
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/logout/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            fetchData(url, 'GET');
+        });
+    </script>
+</body>
+</html>

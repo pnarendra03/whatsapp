@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #statusContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            height: 100%;
+            width: 100%;
+        }
+        #statusHistory, #incomingStatus {
+            width: 80%;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Status Management</h1>
+    <div id="statusContainer">
+        <div>
+            <button id="sendTextStatusButton">Send Text Status</button>
+            <button id="sendVoiceStatusButton" onclick="sendVoiceStatus()">Send Voice Status</button>
+            <button id="sendMediaStatusButton" onclick="sendMediaStatus()">Send Media Status</button>
+        </div>
+
+        <div id="textStatusInputContainer" style="display:none;">
+            <input type="text" id="textStatusInput" placeholder="Enter your text status" required>
+            <button onclick="sendTextStatus()">Send Text Status</button>
+        </div>
+
+        <div id="statusHistory">
+            <h3>Status Sent in Last 24 Hours</h3>
+            <!-- Populate with the user's sent status here -->
+        </div>
+
+        <div id="incomingStatus">
+            <h3>Incoming Status</h3>
+            <!-- Populate with incoming status here -->
+        </div>
+    </div>
+
+    <script>
+        // Show the text status input when the Send Text Status button is clicked
+        document.getElementById('sendTextStatusButton').onclick = function() {
+            document.getElementById('textStatusInputContainer').style.display = 'block';
+        };
+
+        // Function to send text status using the API
+        function sendTextStatus() {
+            const textStatus = document.getElementById('textStatusInput').value;
+            if (!textStatus) {
+                alert("Please enter a text status.");
+                return;
+            }
+
+            const payload = JSON.stringify({ 
+                font: "SANS_SERIF", 
+                text: textStatus // Assuming the API expects a text field
+            });
+
+            console.log("Sending text status payload:", payload); // Debug log
+
+            fetch("https://7103.api.greenapi.com/waInstance7103923326/sendTextStatus/a514a46def7649b481890958921b537d85ab26f846c746a18e", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: payload
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    alert("Text Status sent successfully!");
+                } else {
+                    alert("Failed to send text status: " + JSON.stringify(data));
+                }
+                // Clear the input field after sending
+                document.getElementById('textStatusInput').value = '';
+            })
+            .catch(error => {
+                console.error("Error sending text status:", error);
+                alert("Failed to send text status.");
+            });
+        }
+
+        // Function to send voice status using the API
+        function sendVoiceStatus() {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/sendVoiceStatus/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({}) // Assuming the API requires an empty payload
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    alert("Voice Status sent successfully!");
+                } else {
+                    alert("Failed to send voice status: " + JSON.stringify(data));
+                }
+            })
+            .catch(error => {
+                console.error("Error sending voice status:", error);
+                alert("Failed to send voice status.");
+            });
+        }
+
+        // Function to send media status using the API
+        function sendMediaStatus() {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/sendMediaStatus/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({}) // Assuming the API requires an empty payload
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    alert("Media Status sent successfully!");
+                } else {
+                    alert("Failed to send media status: " + JSON.stringify(data));
+                }
+            })
+            .catch(error => {
+                console.error("Error sending media status:", error);
+                alert("Failed to send media status.");
+            });
+        }
+    </script>
+    <button><a href="index.html">Home Page</a></button>
+</body>
+</html>

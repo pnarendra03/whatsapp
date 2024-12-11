@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #profilePic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            display: none; /* Initially hide until a picture is uploaded */
+            object-fit: cover;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #qrCode {
+            margin-top: 20px;
+            display: none; /* Initially hide QR code image */
+            width: 200px; /* Adjust width as needed */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Home Page</h1>
+    <input type="file" id="uploadProfilePic" accept="image/*">
+    <img id="profilePic" src="" alt="Profile Picture">
+
+    <button id="fetchDataButton" onclick="window.location.href='fetchdata.html'">Fetch Data</button>
+    <button id="fetchContactButton" onclick="window.location.href='fetchcontact.html'">Fetch Contact</button>
+    <button id="sendMessageButton" onclick="window.location.href='sendmessage.html'">Send Message</button>
+    <button id="checkStatusButton" onclick="window.location.href='checkstatus.html'">Check Status</button>
+    <button id="getQRCodeButton">Get QR Code</button>
+    <button id="groupsButton" onclick="window.location.href='group.html'">Groups</button> <!-- New Groups Button -->
+    <img id="qrCode" src="" alt="QR Code">
+
+    <script>
+        // Load the profile picture from local storage on page load
+        window.onload = function() {
+            const storedProfilePic = localStorage.getItem('profilePic');
+            if (storedProfilePic) {
+                const profilePic = document.getElementById('profilePic');
+                profilePic.src = storedProfilePic; // Set the image source
+                profilePic.style.display = 'block'; // Show the image
+            }
+        };
+
+        // Function to handle profile picture upload
+        document.getElementById('uploadProfilePic').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profilePic = document.getElementById('profilePic');
+                    profilePic.src = e.target.result; // Set the image source
+                    profilePic.style.display = 'block'; // Show the image
+
+                    // Update local storage with the new profile picture
+                    localStorage.setItem('profilePic', e.target.result);
+                    
+                    // Call API to set profile picture on the server
+                    updateProfilePictureOnServer(e.target.result);
+                }
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        });
+
+        // Function to send the profile picture to the server
+        function updateProfilePictureOnServer(imageData) {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/setProfilePicture/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({ file: imageData }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Profile picture updated successfully:', data);
+            })
+            .catch((error) => {
+                console.error('Error updating profile picture:', error);
+            });
+        }
+
+        // Function to fetch and display the QR code for linking WhatsApp
+        document.getElementById('getQRCodeButton').addEventListener('click', function() {
+            fetchQRCode();
+        });
+
+        function fetchQRCode() {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/qr/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            fetch(url, { method: 'GET', headers: headers })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Log the entire response data to understand its structure
+                    console.log('QR Code API response:', data);
+                    
+                    // Check if the expected QR code URL is in the response
+                    if (data && data.qrCodeUrl) {
+                        const qrCodeImg = document.getElementById('qrCode');
+                        qrCodeImg.src = data.qrCodeUrl; // Set the QR code image source
+                        qrCodeImg.style.display = 'block'; // Show the image
+                    } else if (data && data.url) {
+                        const qrCodeImg = document.getElementById('qrCode');
+                        qrCodeImg.src = data.url; // Set the QR code image source
+                        qrCodeImg.style.display = 'block'; // Show the image
+                    } else {
+                        console.error('No QR code URL found in the response:', data);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching QR code:', error);
+                });
+        }
+    </script>
+</body>
+</html>

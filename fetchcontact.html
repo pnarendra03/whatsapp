@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Contacts</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch Contacts</h1>
+    <button id="getContactsButton">Get Contacts</button>
+    <div id="response">Response will be displayed here...</div>
+    
+    <table id="contactsTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Number</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.getElementById('getContactsButton').addEventListener('click', async function() {
+            const url = "https://7103.api.greenapi.com/waInstance7103923326/getContacts/a514a46def7649b481890958921b537d85ab26f846c746a18e";
+            const responseDiv = document.getElementById('response');
+            const contactsTable = document.getElementById('contactsTable');
+            const tbody = contactsTable.querySelector('tbody');
+            tbody.innerHTML = ''; // Clear previous entries
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+
+                // Check if data contains contacts
+                if (data && data.contacts && data.contacts.length > 0) {
+                    responseDiv.textContent = 'Contacts fetched successfully!';
+                    contactsTable.style.display = 'table'; // Show the table
+
+                    // Loop through contacts and create table rows
+                    data.contacts.forEach(contact => {
+                        const row = document.createElement('tr');
+                        const nameCell = document.createElement('td');
+                        const numberCell = document.createElement('td');
+
+                        nameCell.textContent = contact.name || 'N/A'; // Set default value if name is missing
+                        numberCell.textContent = contact.number || 'N/A'; // Set default value if number is missing
+
+                        row.appendChild(nameCell);
+                        row.appendChild(numberCell);
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    responseDiv.textContent = 'No contacts found.';
+                    contactsTable.style.display = 'none'; // Hide the table if no contacts
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                contactsTable.style.display = 'none'; // Hide the table on error
+            }
+        });
+    </script>
+</body>
+</html>
